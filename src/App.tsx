@@ -1,9 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Routes } from 'react-router-dom';
 import './App.css';
+import { GlobalsRouting } from './globals/Routing';
 
-function App() {
-	return <div>The Kids Menu</div>
-}
+const App = () => <Routes>
+	{ GlobalsRouting() }
+</Routes>
 
 export default App;

@@ -1,0 +1,21 @@
+.app-kids-page-content {
+    flex: none;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-kids-page-kids-section {
+    flex: 1 1 0%;
+    padding: 0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.app-kids-page-footer {
+    flex: none;
+    border-top: 1px solid #ededed;
+    text-align: center;
+}

@@ -1,0 +1,9 @@
+.app-modal-form-row {
+    padding: 0.4rem 0.8rem;
+    display: flex;
+}
+
+.app-modal-form-header {
+    padding: 1.2rem 0.8rem 0.8rem;
+    font-size: 120%;
+}

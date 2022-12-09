@@ -1,0 +1,64 @@
+.app-kid {
+    width: 8rem;
+    height: 8rem;
+    padding: 0.8rem;
+}
+
+.app-kid-content {
+    flex-direction: column;
+    border: 1px solid #ededed;
+    background-color: white;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.app-kid-image-wrapper {
+    flex: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-kid-image {
+    width: auto;
+    height: 100%;
+    margin: auto;
+    display: inline-block;
+}
+
+.app-kid-footer {
+    flex: 1 1 0%;
+    display: flex;
+    border-top: 1px solid #ededed;
+}
+
+.app-kid-name {
+    flex: 1 1 0%;
+    padding: 0.4rem;
+    text-align: center;
+}
+
+.app-kid-footer-fullscale {
+    flex: none;
+    height: 100%;
+    width: 100%;
+}
+
+.app-kid-footer-fullscale .app-kid-name {
+    font-size: 110%;
+}
+
+.app-kid-action-container {
+    flex: none;
+    border-left: 1px solid #ededed;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-kid-action {
+    cursor: pointer;
+}

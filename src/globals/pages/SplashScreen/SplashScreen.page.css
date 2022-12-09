@@ -1,0 +1,30 @@
+.app-splash-screen-content-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-splash-screen-content {
+    flex: none;
+    padding: 0;
+    max-width: 40rem;
+    width: 100%;
+    height: 100%;
+}
+
+.app-splash-screen-title {
+    font-size: 120%;
+    font-weight: bold;
+    padding: 0 0 0.8rem;
+    text-align: center;
+}
+
+.app-splash-screen-disclaimer {
+    padding: 0.8rem 0;
+}
+
+.app-splash-screen-button-wrapper {
+    padding: 0.8rem 0 0;
+}
