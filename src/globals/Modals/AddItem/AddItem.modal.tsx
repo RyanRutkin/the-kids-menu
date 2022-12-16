@@ -2,26 +2,26 @@
  * A generic modal for adding items into storage based on an item configuration.
  */
 
-import React, { FC, PropsWithChildren, useState, useMemo, ChangeEvent, useCallback, useContext } from 'react';
+import React, { FC, PropsWithChildren, useState, useMemo, ChangeEvent, useCallback, useContext, useEffect } from 'react';
 import { AppButton } from '../../components/Button/Button.component';
 import { AppModalFormRow } from '../../components/ModalFormRow/ModalFormRow.component';
-import { useLocalStorage } from '../../hooks/useLocalStorage.hook';
-import { GraphitEntity, GraphitEntityDefinition, GraphitEntityField, GraphitEntityFieldValue, GraphitEntityRelations, GraphitEntityTable, GraphitEntityTableRelations } from '../../types/GraphitEntity.type';
+import { GraphitEntity, GraphitEntityDefinition, GraphitEntityField, GraphitEntityFieldValue, GraphitEntityRelations } from '../../types/GraphitEntity.type';
 import { v4 as uuidv4 } from 'uuid';
 import { ModalContext } from '../../contexts/Modal.context';
 import { AppModalFormLabel } from '../../components/ModalFormLabel/ModalFormLabel.component';
-import { AppModalFormInput } from '../../components/ModalFormInput/ModalFormInput.component';
+import { LocalStorageContext } from '../../contexts/LocalStorage.context';
+import { AddAddItemEntityInput } from './components/AddItemEntityInput.component';
+import { AppAddItemInput } from './components/AddItemInput.component';
 
-type AppInputEvent = ChangeEvent<HTMLInputElement>;
 
 const buildInitialEntityField = (fieldDefinition: GraphitEntityField, defaultValue?: GraphitEntityFieldValue) => {
     switch (fieldDefinition.dataType) {
         case 'string':
-            return fieldDefinition.defaultValue || '';
+            return fieldDefinition.defaultValue || defaultValue || '';
         case 'number':
-            return fieldDefinition.defaultValue || 0;
+            return fieldDefinition.defaultValue || defaultValue || 0;
         case 'boolean':
-            return fieldDefinition.defaultValue || false;
+            return fieldDefinition.defaultValue || defaultValue || false;
         case 'file':
             return null;
         default:
@@ -30,10 +30,17 @@ const buildInitialEntityField = (fieldDefinition: GraphitEntityField, defaultVal
 }
 
 const buildInitialEntity = (entityDefinition: GraphitEntityDefinition, defaultValue?: GraphitEntity) => {
-    return Object.entries(entityDefinition.fields).reduce<GraphitEntity>((acc, [key, value]) => {
-        acc[key] = buildInitialEntityField(value as GraphitEntityField, defaultValue ? defaultValue[key] : undefined);
-        return acc;
-    }, {} as GraphitEntity);
+    const entity = Object.entries(entityDefinition.fields)
+        .reduce<GraphitEntity>((acc, [key, value]) => {
+            acc[key] = buildInitialEntityField(value as GraphitEntityField, defaultValue ? defaultValue[key] : undefined);
+            return acc;
+        }, {} as GraphitEntity);
+
+    if (defaultValue?.id) {
+        entity.id = defaultValue.id;
+    }
+
+    return entity;
 }
 
 const checkSubmitIsDisabled: (entityDefinition: GraphitEntityDefinition, entity: GraphitEntity) => boolean 
@@ -59,110 +66,29 @@ const checkSubmitIsDisabled: (entityDefinition: GraphitEntityDefinition, entity:
     return missingField === undefined ? false : true;
 }
 
-const AddAddItemEntityInput: FC<{
-    valueDef: GraphitEntityDefinition;
-    addRelation: (data: GraphitEntity) => void;
-    relations: GraphitEntityTableRelations;
-    defaultValue?: GraphitEntity;
-}> = ({
-    valueDef,
-    addRelation,
-    relations,
-    defaultValue,
-}) => {
-    const { openModal } = useContext(ModalContext);
-    const relationCount = useMemo(() => Object.values(relations).filter(related => related), [ relations ]);
-
-    return (
-        <div className="app-add-item-modal-entity-field" >
-            <AppButton
-                onClick={ () => {
-                    openModal({
-                        content: <AppAddItemModal 
-                            entityDefinition={ valueDef } 
-                            selectedEntity={ defaultValue } 
-                            modalCallback={ (data: GraphitEntity) => {
-                                addRelation(data);
-                            } }
-                        />
-                    })
-                }}
-            >Add { valueDef.displayName }</AppButton>
-            {
-                relationCount
-                ? <div className="app-add-item-modal-entity-relation-count" >
-                    { relationCount } { valueDef.displayName } related
-                </div>
-                : null
-            }
-            {
-                // TODO: Add list view
-            }
-        </div>
-    )
-}
-
-const AppAddItemInput: FC<{
-    field: string;
-    valueDef: GraphitEntityField;
-    handleChange: (field: string, e: ChangeEvent<HTMLInputElement>) => void;
-}> = ({
-    field,
-    valueDef,
-    handleChange
-}) => {
-    if (valueDef.dataType === 'entity') {
-        // No-op for typescript
-        return null;
-    }
-    if (valueDef.dataType === 'file') {
-        return (
-            <AppModalFormInput
-                required={ !!valueDef.required }
-                type="file"
-                onChange={ (e: AppInputEvent) => handleChange(field, e) }
-                { ...(valueDef.elementProps || {} )}
-            />
-        );
-    }
-    if (valueDef.dataType === 'boolean') {
-        return (
-            <AppModalFormInput
-            required={ !!valueDef.required }
-                type="checkbox"
-                onChange={ (e: AppInputEvent) => handleChange(field, e) } 
-                checked={ valueDef.defaultValue }
-                { ...(valueDef.elementProps || {} )}
-            />
-        );
-    }
-    return (
-        <AppModalFormInput
-        required={ !!valueDef.required }
-            type={ valueDef.dataType }
-            onChange={ (e: AppInputEvent) => handleChange(field, e) } 
-            value={ valueDef.defaultValue }
-            { ...(valueDef.elementProps || {} )}
-        />
-    );
-}
-
 export const AppAddItemModal: FC<PropsWithChildren<{
     entityDefinition: GraphitEntityDefinition;
     selectedEntity?: GraphitEntity;
     modalCallback?: (data: GraphitEntity) => void;
 }>> = ({ entityDefinition, selectedEntity, modalCallback }) => {
     const { closeModal } = useContext(ModalContext);
-    const [ entityTable, setEntityTable ] = useLocalStorage<GraphitEntityTable>(entityDefinition.storageKey, {
-        relations: {},
-        entries: {}
-    });
+    const { addItem, updateRelations, updateItem, getRelations, registerDefinition } = useContext(LocalStorageContext);
     const entityId = useMemo(() => selectedEntity?.id ? selectedEntity.id as string : uuidv4(), [ selectedEntity ]);
-    const initialEntityValue = useMemo(() => buildInitialEntity(entityDefinition, selectedEntity), [ entityDefinition, selectedEntity ]);
-    const [ entity, setEntity ] = useState<GraphitEntity>(initialEntityValue);
-    const [ relations, setRelations ] = useState<GraphitEntityRelations>(entityTable.relations);
+    const [ entity, setEntity ] = useState<GraphitEntity>(() => buildInitialEntity(entityDefinition, {
+        ...(selectedEntity || {}),
+        "id": entityId
+    }));
+    const [ relations, setRelations ] = useState<GraphitEntityRelations>(() => getRelations(entityDefinition.storageKey, entityId) || {});
 
     const isDisabled = useMemo(() => checkSubmitIsDisabled(entityDefinition, entity), [ entityDefinition, entity ]);
+
+    useEffect(() => {
+        console.log(`Registering definition for: "${ entityDefinition.storageKey }"`);
+        registerDefinition(entityDefinition);
+        if (selectedEntity) {
+            console.log('Selected entity provided', selectedEntity);
+        }
+    }, [ entityDefinition, registerDefinition, selectedEntity ]);
 
     const handleChange = useCallback((field: string, e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target) {
@@ -180,10 +106,7 @@ export const AppAddItemModal: FC<PropsWithChildren<{
             ..._relations,
             [table]: {
                 ...(_relations[table] || {}),
-                [entity.id!]: {
-                    ...((_relations[table] || {})[entity.id!] || {}),
-                    [data.id!]: true
-                }
+                [data.id!]: true
             }
         }));
     }
@@ -200,13 +123,13 @@ export const AppAddItemModal: FC<PropsWithChildren<{
                             ? <AddAddItemEntityInput
                                 valueDef={valueDef.definition as GraphitEntityDefinition }
                                 addRelation={ (data: GraphitEntity) => handleAddRelation(valueDef.definition.storageKey!, data) }
-                                relations={ relations[valueDef.definition.storageKey!][entity.id!] }
-                                defaultValue={ (selectedEntity && selectedEntity[key] ? selectedEntity[key] : valueDef.defaultValue) as GraphitEntity }
+                                relations={ relations[valueDef.definition.storageKey!] || {} }
                             />
                             : <AppAddItemInput
                                 field={ key }
                                 valueDef={ valueDef }
                                 handleChange={ handleChange }
+                                value={ (entity[key] == null ? undefined : entity[key]) as (string | number | readonly string[] | undefined) }
                             />
                         }
                     </AppModalFormRow>
@@ -219,10 +142,25 @@ export const AppAddItemModal: FC<PropsWithChildren<{
                         if (isDisabled) {
                             return
                         }
-                        setEntityTable(entityTable => ({
-                            ...entityTable,
-                            [entityId]: entity
-                        }));
+                        if (selectedEntity) {
+                            updateItem(entityDefinition.storageKey, entity);
+                        } else {
+                            addItem(entityDefinition.storageKey, entity);
+                        }
+
+                        const relationParams = Object.entries(relations)
+                            .map(([ tableNameB, foreignRelations ]) => 
+                                Object.entries(foreignRelations).map(([ identifierB, isRelated ]) => ({
+                                    tableNameA: entityDefinition.storageKey,
+                                    identifierA: entityId,
+                                    tableNameB,
+                                    identifierB,
+                                    isRelated
+                                }))
+                            ).flat();
+
+                        updateRelations(relationParams);
+
                         if (typeof modalCallback === 'function') {
                             modalCallback(entity);
                         }

@@ -1,4 +1,4 @@
-import React, { createContext, FC, PropsWithChildren, ReactElement, useState } from 'react';
+import React, { createContext, FC, PropsWithChildren, ReactElement, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { AppModal } from '../components/Modal/Modal.component';
 
@@ -33,6 +33,8 @@ export const ModalContextProvider: FC<PropsWithChildren> = () => {
         n_stack.pop();
         return n_stack;
     });
+
+    useEffect(() => console.log(`Modal count: ${ modalStack.length }`), [ modalStack ]);
 
     return <ModalContext.Provider value={{ modalStack, openModal, closeModal }} >
         <Outlet/>

@@ -51,12 +51,13 @@ export interface GraphitEntity extends Record<string, GraphitEntityFieldValue> {
     id?: string;
 };
 
-// The relations field is initially indexed by table name,
-// then by entity id of the parent table
-// then by entity id of the related table.
-export type GraphitEntityTableRelations = Record<string, boolean>;
-export type GraphitEntityRelations = Record<string, Record<string, GraphitEntityTableRelations>>;
+// The relations field is initially indexed by entity id of the parent table,
+// then by table name of the foreign table,
+// then by entity id of the foreign table.
+export type GraphitEntityForeignRelations = Record<string, boolean>;
+export type GraphitEntityRelations = Record<string, GraphitEntityForeignRelations>;
+export type GraphitEntityTableRelations = Record<string, GraphitEntityRelations>;
 export type GraphitEntityTable = {
-    relations: GraphitEntityRelations;
+    relations: GraphitEntityTableRelations;
     entries: Record<string, GraphitEntity>;
 }

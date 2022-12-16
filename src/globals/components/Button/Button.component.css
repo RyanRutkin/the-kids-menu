@@ -5,7 +5,7 @@
   border-radius: 16px;
   border-width: 0 0 4px;
   box-sizing: border-box;
-  color: #FFFFFF;
+  color: #fff;
   cursor: pointer;
   display: inline-block;
   font-family: din-round,sans-serif;
@@ -29,6 +29,14 @@
   width: 100%;
 }
 
+.app-button:first-child {
+  margin-left: 0 !important;
+}
+
+.app-button:last-child {
+  margin-right: 0 !important;
+}
+
 .app-button:after {
   background-clip: padding-box;
   background-color: #1CB0F6;
@@ -42,6 +50,22 @@
   right: 0;
   top: 0;
   z-index: -1;
+}
+
+.app-button-type-info:after {
+  background-color: #31ECff;
+}
+
+.app-button-type-error:after {
+  background-color: #FF5131;
+}
+
+.app-button-type-warning:after {
+  background-color: #fcba03;
+}
+
+.app-button-type-success:after {
+  background-color: #39D05B;
 }
 
 .app-button:main,

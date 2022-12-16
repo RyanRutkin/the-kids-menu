@@ -1,4 +1,5 @@
 import { GraphitEntityDefinition } from "../../../types/GraphitEntity.type";
+import { FoodDefinition } from "./Food.definition";
 
 export const KidDefinition: GraphitEntityDefinition = {
     displayName: 'Kid',
@@ -10,7 +11,7 @@ export const KidDefinition: GraphitEntityDefinition = {
             dataType: 'string'
         },
         lastName: {
-            displayName: 'First Name',
+            displayName: 'Last Name',
             dataType: 'string'
         },
         image: {
@@ -19,6 +20,11 @@ export const KidDefinition: GraphitEntityDefinition = {
             elementProps: {
                 accept: 'image/png, image/gif, image/jpeg'
             }
+        },
+        food: {
+            displayName: 'Preffered Foods',
+            dataType: 'entity',
+            definition: FoodDefinition
         }
     }
 };

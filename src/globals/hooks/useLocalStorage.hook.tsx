@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const LOCAL_STORAGE_PREFIX = "__KIDS_MENU_STORAGE__"
 

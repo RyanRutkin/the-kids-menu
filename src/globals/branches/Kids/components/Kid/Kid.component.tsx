@@ -6,7 +6,8 @@ import { CiSquareRemove } from 'react-icons/ci';
 import { KidsContext } from '../../contexts/Kids.context';
 import { ModalContext } from '../../../../contexts/Modal.context';
 import { AppAddItemModal } from '../../../../Modals/AddItem/AddItem.modal';
-import { KidDefinition } from '../../AddKid.modalDefinition';
+import { AppRemoveItemModal } from '../../../../Modals/RemoveItem/RemoveItem.modal';
+import { KidDefinition } from '../../Definitions/Kid.definition';
 
 export const AppKid: FC<{ kid: Kid, allowEdit?: boolean }> = ({ kid, allowEdit }) => {
     const { setSelectedKidId } = useContext(KidsContext);
@@ -30,13 +31,28 @@ export const AppKid: FC<{ kid: Kid, allowEdit?: boolean }> = ({ kid, allowEdit }
                         ? <div className="app-kid-action-container" >
                             <div className="app-kid-action" onClick={ e => {
                                 setSelectedKidId(kid.id);
+                                e.stopPropagation();
+                                e.preventDefault();
                                 openModal({
                                     content: <AppAddItemModal
                                         entityDefinition={ KidDefinition }
+                                        selectedEntity={ kid }
                                     />
                                 })
                             } } >
                                 <AiOutlineEdit />
+                            </div>
+                            <div className="app-kid-action" onClick={ e => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                openModal({
+                                    content: <AppRemoveItemModal
+                                        entityDefinition={ KidDefinition }
+                                        entityId={ kid.id }
+                                    />
+                                })
+                            } } >
+                                <CiSquareRemove />
                             </div>
                         </div>
                         : null

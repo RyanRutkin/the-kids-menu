@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import './ModalFormInput.component.css';
 import { FaStarOfLife } from 'react-icons/fa';
 
-type AppModalFormInputProps = { required?: boolean } & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+export type AppModalFormInputProps = { required?: boolean } & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 export const AppModalFormInput: FC<AppModalFormInputProps> = ({ required, className, ...props }) => (
     <div className="app-modal-form-input-wrapper" >

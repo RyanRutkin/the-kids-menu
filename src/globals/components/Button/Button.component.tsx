@@ -7,45 +7,34 @@ type NativeButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTML
 
 type AppButtonProps = NativeButtonProps & {
     buttonType?: AppButtonType;
+    margin?: string;
 }
 
-type AppButtonTypeStyle = {
-    backgroundColor: string;
-    fontColor: string;
-}
+export const AppButton: FC<PropsWithChildren<AppButtonProps>> = ({ children, buttonType, className, onClick, margin, ...props }) => {
+    const buttonClassName = (() => {
+        let n_className = `app-button app-button-type-${ buttonType || 'info' }`;
 
-const BUTTON_TYPE_MAP: Record<AppButtonType, AppButtonTypeStyle> = {
-    info: {
-        backgroundColor: '#31ECff',
-        fontColor: '#ffffff'
-    },
-    error: {
-        backgroundColor: '#FF5131',
-        fontColor: '#ffffff'
-    },
-    success: {
-        backgroundColor: '#39D05B',
-        fontColor: '#ffffff'
-    },
-    warning: {
-        backgroundColor: '#FFEA00',
-        fontColor: '#ffffff'
-    }
-}
+        if (className) {
+            n_className = `${ n_className } ${ className }`
+        }
 
-export const AppButton: FC<PropsWithChildren<AppButtonProps>> = ({ children, buttonType, className, onClick, ...props }) => (
-    <button
-        className={ `app-button${ className ? ` ${className}` : '' }` }
-        style={ BUTTON_TYPE_MAP[buttonType || 'info' ] }
-        onClick={ e => {
-            if (typeof onClick === 'function') {
-                e.stopPropagation();
-                e.preventDefault();
-                onClick(e);
-            }
-        }}
-        { ...props }
-    >
-        { children }
-    </button>
-);
+        return n_className;
+    })();
+
+    return (
+        <button
+            className={ buttonClassName }
+            style={{ "margin": margin || '0.4em 0.8em' }}
+            onClick={ e => {
+                if (typeof onClick === 'function') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onClick(e);
+                }
+            }}
+            { ...props }
+        >
+            { children }
+        </button>
+    );
+};

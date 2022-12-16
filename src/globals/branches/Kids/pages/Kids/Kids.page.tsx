@@ -18,7 +18,7 @@ export const KidsPage = () => {
                 <div className="app-kids-page-kids-section" >
                     {
                         kids.map(kid => (
-                            <AppKid kid={ kid } allowEdit />
+                            <AppKid key={ `kid_page__${kid.id}` } kid={ kid } allowEdit />
                         ))
                     }
                 </div>

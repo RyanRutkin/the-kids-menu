@@ -16,7 +16,7 @@
     flex: none;
     padding: 0.4rem 0.8rem;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .app-modal-content {
