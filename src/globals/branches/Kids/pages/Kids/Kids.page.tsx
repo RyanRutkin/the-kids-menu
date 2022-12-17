@@ -5,7 +5,7 @@ import { KidsContext } from '../../contexts/Kids.context';
 import { ModalContext } from '../../../../contexts/Modal.context';
 import './Kids.page.css';
 import { AppButton } from '../../../../components/Button/Button.component';
-import { AppAddItemModal } from '../../../../Modals/AddItem/AddItem.modal';
+import { AppEditItemModal } from '../../../../Modals/EditItem/EditItem.modal';
 import { KidDefinition } from '../../Definitions/Kid.definition';
 
 export const KidsPage = () => {
@@ -27,7 +27,7 @@ export const KidsPage = () => {
                         onClick={ e => {
                             setSelectedKidId(undefined);
                             openModal({
-                                content: <AppAddItemModal
+                                content: <AppEditItemModal
                                     entityDefinition={ KidDefinition }
                                 />
                             });

@@ -5,7 +5,7 @@ import { GraphitEntityField } from '../../../types/GraphitEntity.type';
 
 type AppInputEvent = ChangeEvent<HTMLInputElement>;
 
-export const AppAddItemInput: FC<{
+export const AppEditItemInput: FC<{
     field: string;
     valueDef: GraphitEntityField;
     handleChange: (field: string, e: ChangeEvent<HTMLInputElement>) => void;

@@ -10,8 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { ModalContext } from '../../contexts/Modal.context';
 import { AppModalFormLabel } from '../../components/ModalFormLabel/ModalFormLabel.component';
 import { LocalStorageContext } from '../../contexts/LocalStorage.context';
-import { AddAddItemEntityInput } from './components/AddItemEntityInput.component';
-import { AppAddItemInput } from './components/AddItemInput.component';
+import { AddEditItemEntityInput } from './components/EditItemEntityInput.component';
+import { AppEditItemInput } from './components/EditItemInput.component';
 
 
 const buildInitialEntityField = (fieldDefinition: GraphitEntityField, defaultValue?: GraphitEntityFieldValue) => {
@@ -66,7 +66,7 @@ const checkSubmitIsDisabled: (entityDefinition: GraphitEntityDefinition, entity:
     return missingField === undefined ? false : true;
 }
 
-export const AppAddItemModal: FC<PropsWithChildren<{
+export const AppEditItemModal: FC<PropsWithChildren<{
     entityDefinition: GraphitEntityDefinition;
     selectedEntity?: GraphitEntity;
     modalCallback?: (data: GraphitEntity) => void;
@@ -120,12 +120,12 @@ export const AppAddItemModal: FC<PropsWithChildren<{
                         <AppModalFormLabel>{ valueDef.displayName }</AppModalFormLabel>
                         {
                             valueDef.dataType === 'entity'
-                            ? <AddAddItemEntityInput
+                            ? <AddEditItemEntityInput
                                 valueDef={valueDef.definition as GraphitEntityDefinition }
                                 addRelation={ (data: GraphitEntity) => handleAddRelation(valueDef.definition.storageKey!, data) }
                                 relations={ relations[valueDef.definition.storageKey!] || {} }
                             />
-                            : <AppAddItemInput
+                            : <AppEditItemInput
                                 field={ key }
                                 valueDef={ valueDef }
                                 handleChange={ handleChange }

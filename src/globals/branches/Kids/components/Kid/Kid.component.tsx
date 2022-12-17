@@ -5,7 +5,7 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { CiSquareRemove } from 'react-icons/ci';
 import { KidsContext } from '../../contexts/Kids.context';
 import { ModalContext } from '../../../../contexts/Modal.context';
-import { AppAddItemModal } from '../../../../Modals/AddItem/AddItem.modal';
+import { AppEditItemModal } from '../../../../Modals/EditItem/EditItem.modal';
 import { AppRemoveItemModal } from '../../../../Modals/RemoveItem/RemoveItem.modal';
 import { KidDefinition } from '../../Definitions/Kid.definition';
 
@@ -34,7 +34,7 @@ export const AppKid: FC<{ kid: Kid, allowEdit?: boolean }> = ({ kid, allowEdit }
                                 e.stopPropagation();
                                 e.preventDefault();
                                 openModal({
-                                    content: <AppAddItemModal
+                                    content: <AppEditItemModal
                                         entityDefinition={ KidDefinition }
                                         selectedEntity={ kid }
                                     />
